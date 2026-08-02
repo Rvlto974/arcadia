@@ -85,3 +85,6 @@ class Router
         echo "<h1>404 - Page non trouvée</h1>";
     }
 }
+
+// Exemple dans Router.php
+$router->add('POST', '/api/avis', 'AvisController@create');

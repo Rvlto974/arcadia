@@ -52,3 +52,42 @@ class AvisController
         exit;
     }
 }
+
+// Controllers/AvisController.php
+
+class AvisController {
+
+    public function create() {
+        // Indiquer au navigateur qu'on renvoie du JSON
+        header('Content-Type: application/json');
+
+        // Récupérer les données JSON envoyées par fetch()
+        $json = file_get_contents('php://input');
+        $data = json_decode($json, true);
+
+        // Validation simple
+        if (empty($data['nom']) || empty($data['note']) || empty($data['commentaire'])) {
+            http_response_code(400); // Bad Request
+            echo json_encode(['erreur' => 'Tous les champs sont obligatoires.']);
+            exit;
+        }
+
+        // Appel au modèle pour insérer en BDD
+        $avisModel = new Avis(); // Ton fichier dans Models/
+        $succes = $avisModel->creerAvis([
+            'pseudo' => htmlspecialchars($data['nom']),
+            'note' => (int)$data['note'],
+            'commentaire' => htmlspecialchars($data['commentaire']),
+            'statut' => 'EN_ATTENTE' // Par défaut
+        ]);
+
+        if ($succes) {
+            http_response_code(201); // Created
+            echo json_encode(['message' => 'Avis envoyé avec succès ! Il sera relu par un employé.']);
+        } else {
+            http_response_code(500); // Server Error
+            echo json_encode(['erreur' => 'Erreur lors de l enregistrement dans la base de données.']);
+        }
+        exit;
+    }
+}

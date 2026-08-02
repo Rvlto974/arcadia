@@ -76,3 +76,28 @@ class Avis
         return $stmt->execute(['id' => $id]);
     }
 }
+
+// Models/Avis.php
+
+class Avis {
+    private $pdo;
+
+    public function __construct() {
+        // Récupération de l'instance PDO depuis Config/Database.php
+        $this->pdo = Database::getInstance(); 
+    }
+
+    public function creerAvis($data) {
+        $sql = "INSERT INTO avis (pseudo, note, commentaire, statut, date_creation) 
+                VALUES (:pseudo, :note, :commentaire, :statut, NOW())";
+        
+        $stmt = $this->pdo->prepare($sql);
+        
+        return $stmt->execute([
+            ':pseudo' => $data['pseudo'],
+            ':note' => $data['note'],
+            ':commentaire' => $data['commentaire'],
+            ':statut' => $data['statut']
+        ]);
+    }
+}
