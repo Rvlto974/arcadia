@@ -2,18 +2,15 @@
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use App\Config\Database;
+use App\Models\Animal;
 
-echo "<h1>🐘 Arcadia Zoo - Test Autoloading & Données</h1>";
+echo "<h1>🐘 Arcadia Zoo - Test Modèle Animal</h1>";
 
 try {
-    // Utilisation de votre méthode getPDO()
-    $pdo = Database::getPDO();
+    // Utilisation de la méthode statique du Modèle
+    $animaux = Animal::getAllWithHabitat();
 
-    $stmt = $pdo->query("SELECT animal.prenom, animal.race, habitat.nom AS habitat_nom FROM animal JOIN habitat ON animal.habitat_id = habitat.id");
-    $animaux = $stmt->fetchAll();
-
-    echo "<h3>🐾 Animaux chargés via l'Autoloader PSR-4 :</h3><ul>";
+    echo "<h3>🐾 Animaux récupérés via App\\Models\\Animal :</h3><ul>";
     foreach ($animaux as $animal) {
         echo "<li><strong>" . htmlspecialchars($animal['prenom']) . "</strong> - " . htmlspecialchars($animal['race']) . " (<em>" . htmlspecialchars($animal['habitat_nom']) . "</em>)</li>";
     }
