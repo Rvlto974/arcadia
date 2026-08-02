@@ -8,21 +8,31 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Router;
 use App\Controllers\AnimalController;
+use App\Controllers\HabitatController;
 
 $router = new Router();
 
-// Définition des routes
-$router->get('/animaux', [AnimalController::class, 'index']);
-$router->get('/', [AnimalController::class, 'index']); // Page d'accueil temporaire
+// --- Définition des routes ---
 
-// Traitement de la requête
+// Page d'accueil & Animaux
+$router->get('/', [AnimalController::class, 'index']);
+$router->get('/animaux', [AnimalController::class, 'index']);
+
+// Habitats
+$router->get('/habitats', [HabitatController::class, 'index']);
+$router->get('/habitat', [HabitatController::class, 'show']);
+
+// --- Traitement de la requête ---
 $uri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Dispatch unique à la fin, une fois TOUTES les routes déclarées
 $router->dispatch($uri, $method);
 
-use App\Controllers\HabitatController;
+// --- Traitement de la requête ---
 
-// ...
-$router->get('/animaux', [AnimalController::class, 'index']);
-$router->get('/habitats', [HabitatController::class, 'index']); // <- Nouvelle route
+// Extraire uniquement le chemin sans les paramètres GET (ex: "/habitat?id=1" devient "/habitat")
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$method = $_SERVER['REQUEST_METHOD'];
+
+$router->dispatch($uri, $method);
