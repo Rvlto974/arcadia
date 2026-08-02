@@ -15,12 +15,23 @@ class Avis
     }
 
     /**
-     * Récupère tous les avis validés par un employé
+     * Récupère tous les avis validés par un employé (Partie publique)
      */
     public function getValides(): array
     {
-        // Remplacement de 'avis_id' par 'id'
         $query = "SELECT * FROM avis WHERE is_visible = TRUE ORDER BY id DESC";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Récupère tous les avis en attente de modération (Espace employé)
+     */
+    public function getEnAttente(): array
+    {
+        $query = "SELECT * FROM avis WHERE is_visible = FALSE ORDER BY id DESC";
         $stmt = $this->db->prepare($query);
         $stmt->execute();
 
@@ -41,5 +52,27 @@ class Avis
             'pseudo' => $pseudo,
             'commentaire' => $commentaire
         ]);
+    }
+
+    /**
+     * Valide un avis (rend visible sur le site public)
+     */
+    public function valider(int $id): bool
+    {
+        $query = "UPDATE avis SET is_visible = TRUE WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+
+        return $stmt->execute(['id' => $id]);
+    }
+
+    /**
+     * Supprime définitivement un avis refusé
+     */
+    public function supprimer(int $id): bool
+    {
+        $query = "DELETE FROM avis WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+
+        return $stmt->execute(['id' => $id]);
     }
 }

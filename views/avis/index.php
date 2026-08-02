@@ -2,14 +2,15 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avis - Zoo Arcadia</title>
 </head>
 <body>
     <h1>Avis des visiteurs</h1>
 
-    <!-- Messages de confirmation ou d'erreur -->
+    <!-- Notifications d'état -->
     <?php if (isset($_GET['success'])): ?>
-        <p style="color: green;">Merci ! Votre avis a été soumis et sera publié après validation.</p>
+        <p style="color: green;">Merci ! Votre avis a été soumis et sera publié après validation par notre équipe.</p>
     <?php elseif (isset($_GET['error'])): ?>
         <p style="color: red;">Veuillez remplir tous les champs du formulaire.</p>
     <?php endif; ?>
@@ -38,9 +39,9 @@
         <p>Aucun avis publié pour le moment.</p>
     <?php else: ?>
         <?php foreach ($avisValides as $item): ?>
-            <div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+            <div style="border: 1px solid #ccc; padding: 12px; margin-bottom: 12px; border-radius: 4px;">
                 <strong><?= htmlspecialchars($item['pseudo']) ?></strong>
-                <p><?= htmlspecialchars($item['commentaire']) ?></p>
+                <p style="margin-top: 6px;"><?= htmlspecialchars($item['commentaire']) ?></p>
             </div>
         <?php endforeach; ?>
     <?php endif; ?>
