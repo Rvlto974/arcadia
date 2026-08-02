@@ -6,10 +6,22 @@ class Router
 {
     private array $routes = [];
 
+    // Enregistre une route générique (GET, POST, etc.)
+    public function add(string $method, string $path, array $action): void
+    {
+        $this->routes[strtoupper($method)][$path] = $action;
+    }
+
     // Enregistre une route GET
     public function get(string $path, array $action): void
     {
-        $this->routes['GET'][$path] = $action;
+        $this->add('GET', $path, $action);
+    }
+
+    // Enregistre une route POST
+    public function post(string $path, array $action): void
+    {
+        $this->add('POST', $path, $action);
     }
 
     // Résout l'URL demandée

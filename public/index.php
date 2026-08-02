@@ -9,7 +9,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Router;
 use App\Controllers\AnimalController;
 use App\Controllers\HabitatController;
-use App\Controllers\ServiceController; // Import du contrôleur des Services
+use App\Controllers\ServiceController;
+use App\Controllers\AvisController; // Import du contrôleur des Avis
 
 $router = new Router();
 
@@ -25,6 +26,10 @@ $router->get('/habitat', [HabitatController::class, 'show']);
 
 // Services
 $router->get('/services', [ServiceController::class, 'index']);
+
+// Avis
+$router->get('/avis', [AvisController::class, 'index']);
+$router->post('/avis/creer', [AvisController::class, 'create']);
 
 
 // --- Traitement de la requête ---
