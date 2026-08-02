@@ -1,0 +1,11 @@
+{
+    "name": "arcadia/zoo",
+    "description": "Projet Zoo Arcadia - Application PHP MVC",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "require": {}
+}
