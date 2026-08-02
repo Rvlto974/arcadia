@@ -50,3 +50,8 @@ $uri = $_SERVER['REQUEST_URI'] ?? '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 $router->dispatch($uri, $method);
+
+// --- ROUTES ESPACE EMPLOYÉ / MODÉRATION DES AVIS ---
+$router->get('/employe/avis', [AvisController::class, 'index']);
+$router->post('/employe/avis/valider', [AvisController::class, 'valider']);
+$router->post('/employe/avis/refuser', [AvisController::class, 'refuser']);

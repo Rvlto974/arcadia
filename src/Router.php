@@ -86,5 +86,3 @@ class Router
     }
 }
 
-// Exemple dans Router.php
-$router->add('POST', '/api/avis', 'AvisController@create');
