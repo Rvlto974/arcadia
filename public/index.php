@@ -1,10 +1,11 @@
 <?php
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// 1. Démarrage de la session PHP
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
-// Autoloader PSR-4 maison (pour se passer de composer dump-autoload dans Docker)
+// 2. Autoloader PSR-4 maison
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
     $base_dir = __DIR__ . '/../src/';
@@ -23,38 +24,28 @@ spl_autoload_register(function ($class) {
 });
 
 use App\Router;
-use App\Controllers\AnimalController;
-use App\Controllers\HabitatController;
-use App\Controllers\ServiceController;
-use App\Controllers\AvisController;
-use App\Controllers\Employee\AvisController as EmployeeAvisController;
+use App\Controllers\AuthController;
+use App\Controllers\Employee\AvisController;
 
+// 3. Instanciation du Routeur
 $router = new Router();
 
-// --- Définition des routes ---
+// --- ROUTE RACINE (Redirection vers /login) ---
+$router->get('/', function() {
+    header('Location: /login');
+    exit();
+});
 
-// Accueil & Animaux
-$router->get('/', [AnimalController::class, 'index']);
-$router->get('/animaux', [AnimalController::class, 'index']);
+// --- ROUTES AUTHENTIFICATION ---
+$router->get('/login', [AuthController::class, 'login']);
+$router->post('/login', [AuthController::class, 'postLogin']);
+$router->get('/logout', [AuthController::class, 'logout']);
 
-// Habitats
-$router->get('/habitats', [HabitatController::class, 'index']);
-$router->get('/habitat', [HabitatController::class, 'show']);
+// --- ROUTES ESPACE EMPLOYÉ / ADMIN ---
+$router->get('/employe/avis', [AvisController::class, 'index']);
 
-// Services
-$router->get('/services', [ServiceController::class, 'index']);
-
-// Avis Publics
-$router->get('/avis', [AvisController::class, 'index']);
-$router->post('/avis/creer', [AvisController::class, 'create']);
-
-// Avis Modération Employé
-$router->get('/employe/avis', [EmployeeAvisController::class, 'index']);
-$router->post('/employe/avis/valider', [EmployeeAvisController::class, 'valider']);
-$router->post('/employe/avis/refuser', [EmployeeAvisController::class, 'refuser']);
-
-// --- Traitement de la requête ---
-$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$method = $_SERVER['REQUEST_METHOD'];
+// 4. Traitement de la requête HTTP
+$uri = $_SERVER['REQUEST_URI'] ?? '/';
+$method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 $router->dispatch($uri, $method);
