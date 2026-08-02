@@ -5,7 +5,7 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Autoloader PSR-4 maison
+// 2. Autoloader PSR-4 maison sécurisé
 spl_autoload_register(function ($class) {
     $prefix = 'App\\';
     $base_dir = __DIR__ . '/../src/';
@@ -18,7 +18,8 @@ spl_autoload_register(function ($class) {
     $relative_class = substr($class, $len);
     $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
 
-    if (file_exists($file)) {
+    // Vérifie que le fichier existe ET que la classe n'a pas déjà été chargée en mémoire
+    if (file_exists($file) && !class_exists($class, false)) {
         require_once $file;
     }
 });
