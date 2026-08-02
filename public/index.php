@@ -20,3 +20,9 @@ $uri = $_SERVER['REQUEST_URI'];
 $method = $_SERVER['REQUEST_METHOD'];
 
 $router->dispatch($uri, $method);
+
+use App\Controllers\HabitatController;
+
+// ...
+$router->get('/animaux', [AnimalController::class, 'index']);
+$router->get('/habitats', [HabitatController::class, 'index']); // <- Nouvelle route
