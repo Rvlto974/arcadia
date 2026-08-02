@@ -1,14 +1,22 @@
 <?php
 
-// Activation explicite des erreurs PHP pour le développement
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Chargement de l'autoloader Composer (PSR-4)
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use App\Router;
 use App\Controllers\AnimalController;
 
-$controller = new AnimalController();
-$controller->index();
+$router = new Router();
+
+// Définition des routes
+$router->get('/animaux', [AnimalController::class, 'index']);
+$router->get('/', [AnimalController::class, 'index']); // Page d'accueil temporaire
+
+// Traitement de la requête
+$uri = $_SERVER['REQUEST_URI'];
+$method = $_SERVER['REQUEST_METHOD'];
+
+$router->dispatch($uri, $method);
