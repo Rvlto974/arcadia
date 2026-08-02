@@ -9,6 +9,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use App\Router;
 use App\Controllers\AnimalController;
 use App\Controllers\HabitatController;
+use App\Controllers\ServiceController; // Import du contrôleur des Services
 
 $router = new Router();
 
@@ -22,12 +23,9 @@ $router->get('/animaux', [AnimalController::class, 'index']);
 $router->get('/habitats', [HabitatController::class, 'index']);
 $router->get('/habitat', [HabitatController::class, 'show']);
 
-// --- Traitement de la requête ---
-$uri = $_SERVER['REQUEST_URI'];
-$method = $_SERVER['REQUEST_METHOD'];
+// Services
+$router->get('/services', [ServiceController::class, 'index']);
 
-// Dispatch unique à la fin, une fois TOUTES les routes déclarées
-$router->dispatch($uri, $method);
 
 // --- Traitement de la requête ---
 
@@ -35,4 +33,5 @@ $router->dispatch($uri, $method);
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 $method = $_SERVER['REQUEST_METHOD'];
 
+// Dispatch unique une fois TOUTES les routes déclarées
 $router->dispatch($uri, $method);

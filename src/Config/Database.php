@@ -7,9 +7,9 @@ use PDOException;
 
 class Database 
 {
-    // Configuration MySQL (noms exacts de vos conteneurs Docker)
+    // Configuration MySQL
     private static string $host = 'arcadia_mysql';
-    private static string $dbName = 'arcadia';
+    private static string $dbName = 'arcadia_zoo'; // Fixed: arcadia_zoo au lieu de arcadia
     private static string $username = 'arcadia_user';
     private static string $password = 'arcadia_password';
     private static ?PDO $pdo = null;
@@ -24,6 +24,7 @@ class Database
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     PDO::ATTR_EMULATE_PREPARES => false,
+                    PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4"
                 ]);
             } catch (PDOException $e) {
                 throw new \Exception("Erreur de connexion MySQL : " . $e->getMessage());
@@ -32,13 +33,11 @@ class Database
         return self::$pdo;
     }
 
-    // Alias pour appeler getMySQLConnection() au besoin
     public static function getMySQLConnection(): PDO
     {
         return self::getPDO();
     }
 
-    // Connexion MongoDB native (Driver PECL)
     public static function getMongoDriver(): \MongoDB\Driver\Manager 
     {
         try {
