@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Config\Database;
+use App\Database;
 use PDO;
 
 class AuthController

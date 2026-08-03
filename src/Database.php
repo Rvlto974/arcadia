@@ -40,8 +40,11 @@ class Database
         return self::$instance;
     }
 
-    public function getConnection(): PDO
+    /**
+     * Méthode statique pour récupérer directement l'instance PDO
+     */
+    public static function getConnection(): PDO
     {
-        return $this->connection;
+        return self::getInstance()->connection;
     }
 }
