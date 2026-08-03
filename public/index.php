@@ -1,28 +1,15 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 // 1. Démarrage de la session PHP
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// 2. Autoloader PSR-4 maison sécurisé
-spl_autoload_register(function ($class) {
-    $prefix = 'App\\';
-    $base_dir = __DIR__ . '/../src/';
-
-    $len = strlen($prefix);
-    if (strncmp($prefix, $class, $len) !== 0) {
-        return;
-    }
-
-    $relative_class = substr($class, $len);
-    $file = $base_dir . str_replace('\\', '/', $relative_class) . '.php';
-
-    // Vérifie que le fichier existe ET que la classe n'a pas déjà été chargée en mémoire
-    if (file_exists($file) && !class_exists($class, false)) {
-        require_once $file;
-    }
-});
+// 2. Chargement de l'autoloader officiel de Composer
+require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Router;
 use App\Controllers\AuthController;
@@ -42,16 +29,13 @@ $router->get('/login', [AuthController::class, 'login']);
 $router->post('/login', [AuthController::class, 'postLogin']);
 $router->get('/logout', [AuthController::class, 'logout']);
 
-// --- ROUTES ESPACE EMPLOYÉ / ADMIN ---
+// --- ROUTES ESPACE EMPLOYÉ / MODÉRATION DES AVIS ---
 $router->get('/employe/avis', [AvisController::class, 'index']);
+$router->post('/employe/avis/valider', [AvisController::class, 'valider']);
+$router->post('/employe/avis/refuser', [AvisController::class, 'refuser']);
 
 // 4. Traitement de la requête HTTP
 $uri = $_SERVER['REQUEST_URI'] ?? '/';
 $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
 $router->dispatch($uri, $method);
-
-// --- ROUTES ESPACE EMPLOYÉ / MODÉRATION DES AVIS ---
-$router->get('/employe/avis', [AvisController::class, 'index']);
-$router->post('/employe/avis/valider', [AvisController::class, 'valider']);
-$router->post('/employe/avis/refuser', [AvisController::class, 'refuser']);
