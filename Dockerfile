@@ -8,3 +8,5 @@ RUN a2enmod rewrite
 
 # Définir le répertoire de travail
 WORKDIR /var/www/html
+
+RUN a2enmod rewrite

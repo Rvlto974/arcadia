@@ -1,28 +1,22 @@
 <?php
 
 class Database {
-    private static $host = 'db'; // Nom du service dans docker-compose.yml
-    private static $db_name = 'zoo_arcadia';
-    private static $username = 'root';
-    private static $password = 'rootpassword';
-    private static $conn = null;
+    private static $instance = null;
 
-    public static function getConnection() {
-        if (self::$conn === null) {
+    public static function getInstance() {
+        if (self::$instance === null) {
+            $host = 'db'; // Correspond au nom du service dans votre docker-compose.yml
+            $dbname = 'zoo_arcadia'; // Correspond à MYSQL_DATABASE
+            $username = 'root';
+            $password = 'rootpassword'; // Correspond à MYSQL_ROOT_PASSWORD
+
             try {
-                self::$conn = new PDO(
-                    "mysql:host=" . self::$host . ";dbname=" . self::$db_name . ";charset=utf8mb4",
-                    self::$username,
-                    self::$password,
-                    [
-                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-                    ]
-                );
-            } catch(PDOException $exception) {
-                echo "Erreur de connexion : " . $exception->getMessage();
+                self::$instance = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+                self::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            } catch (PDOException $e) {
+                die("Erreur de connexion : " . $e->getMessage());
             }
         }
-        return self::$conn;
+        return self::$instance;
     }
 }

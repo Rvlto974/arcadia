@@ -17,6 +17,12 @@ class Router {
                 $controller->index();
                 break;
                 
+            case '/habitats':
+                require_once __DIR__ . '/controllers/HabitatController.php';
+                $controller = new HabitatController();
+                $controller->index();
+                break;
+                
             default:
                 http_response_code(404);
                 echo "Page non trouvée (404)";
