@@ -1,20 +1,23 @@
 <?php
 
-class Habitat {
-    private $db;
+require_once __DIR__ . '/../config/database.php';
 
-    public function __construct(PDO $pdo) {
-        $this->db = $pdo;
+class Habitat {
+    
+    // Récupérer tous les habitats
+    public static function getAll(): array {
+        $db = Database::getInstance();
+        $stmt = $db->query("SELECT * FROM habitat");
+        return $stmt->fetchAll();
     }
 
-    /**
-     * Récupère la liste de tous les habitats enregistrés
-     */
-    public function getAll() {
-        $sql = "SELECT * FROM habitat";
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute();
+    // Récupérer un habitat par son ID (utile pour les pages de détails)
+    public static function getById(int $id): ?array {
+        $db = Database::getInstance();
+        $stmt = $db->prepare("SELECT * FROM habitat WHERE habitat_id = ?");
+        $stmt->execute([$id]);
+        $habitat = $stmt->fetch();
         
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $habitat ? $habitat : null;
     }
 }
