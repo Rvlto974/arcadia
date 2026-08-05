@@ -1,31 +1,34 @@
 <?php
 
+
 require_once __DIR__ . '/../models/Habitat.php';
+require_once __DIR__ . '/../views/habitats.php';
 
 class HabitatController {
-    
-    // Afficher la liste de tous les habitats
     public function index() {
-        // Utilisation de la méthode statique de notre modèle unifié
-        $habitats = Habitat::all();
+        try {
+            $host = 'db';
+            $dbname = 'zoo_arcadia';
+            $username = 'root';
+            $password = 'rootpassword';
 
-        require_once __DIR__ . '/../views/habitats.php';
-    }
+            // Connexion PDO
+            $db = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            ]);
 
-    // Afficher le détail d'un habitat spécifique et ses animaux
-    public function show($id) {
-        $habitat = Habitat::find($id);
+            // Récupération des habitats
+            $habitatModel = new Habitat($db);
+            $habitats = $habitatModel->getAll();
 
-        // Si l'habitat n'existe pas, on renvoie une erreur 404
-        if (!$habitat) {
-            http_response_code(404);
-            require_once __DIR__ . '/../views/errors/404.php';
-            return;
+            // Chargement de la vue
+            require_once __DIR__ . '/../views/habitats.php';
+
+        } catch (PDOException $e) {
+            echo "<div style='color: red; padding: 20px;'>
+                    <h3>Erreur d'affichage des habitats :</h3>
+                    <p>" . htmlspecialchars($e->getMessage()) . "</p>
+                  </div>";
         }
-
-        // Récupération des animaux associés à cet habitat
-        $animals = Habitat::getAnimalsByHabitat($id);
-
-        require_once __DIR__ . '/../views/habitat_detail.php';
     }
 }
